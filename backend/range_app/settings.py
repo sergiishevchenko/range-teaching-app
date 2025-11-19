@@ -103,7 +103,6 @@ CORS_ALLOWED_ORIGINS = [origin.strip().rstrip('/') for origin in cors_origins.sp
 
 CORS_ALLOW_CREDENTIALS = True
 
-# CSRF trusted origins (should match CORS origins)
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS.copy()
 
 CORS_ALLOW_HEADERS = [
