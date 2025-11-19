@@ -11,9 +11,14 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:800
 function App() {
   const [graphData, setGraphData] = useState(null);
   const [points, setPoints] = useState([]);
+  const [initialPoints, setInitialPoints] = useState([]);
   const [challenge, setChallenge] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [statistics, setStatistics] = useState(() => {
+    const saved = localStorage.getItem('rangeAppStatistics');
+    return saved ? JSON.parse(saved) : { completed: 0, total: 0, successRate: 0 };
+  });
 
   useEffect(() => {
     loadInitialData();
@@ -24,7 +29,9 @@ function App() {
     try {
       const response = await axios.get(`${API_BASE_URL}/data/`);
       setGraphData(response.data);
-      setPoints(response.data.points);
+      const initial = response.data.points;
+      setInitialPoints(initial);
+      setPoints(initial);
       setLoading(false);
     } catch (error) {
       console.error('Error loading data:', error);
@@ -53,6 +60,17 @@ function App() {
         challenge: challenge,
       });
       setFeedback(response.data);
+      
+      const newStats = {
+        ...statistics,
+        total: statistics.total + 1,
+        completed: response.data.is_correct ? statistics.completed + 1 : statistics.completed,
+      };
+      newStats.successRate = newStats.total > 0 
+        ? Math.round((newStats.completed / newStats.total) * 100) 
+        : 0;
+      setStatistics(newStats);
+      localStorage.setItem('rangeAppStatistics', JSON.stringify(newStats));
     } catch (error) {
       console.error('Error validating:', error);
       setFeedback({
@@ -67,6 +85,17 @@ function App() {
     loadInitialData();
   };
 
+  const handleReset = () => {
+    setPoints(initialPoints);
+    setFeedback(null);
+  };
+
+  const handleResetStats = () => {
+    const resetStats = { completed: 0, total: 0, successRate: 0 };
+    setStatistics(resetStats);
+    localStorage.setItem('rangeAppStatistics', JSON.stringify(resetStats));
+  };
+
   if (loading) {
     return (
       <div className="app">
@@ -79,6 +108,24 @@ function App() {
     <div className="app">
       <div className="container">
         <h1 className="title">Range Teaching App</h1>
+        
+        <div className="statistics-dashboard">
+          <div className="stat-item">
+            <span className="stat-label">Completed:</span>
+            <span className="stat-value">{statistics.completed}</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Total:</span>
+            <span className="stat-value">{statistics.total}</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Success Rate:</span>
+            <span className="stat-value">{statistics.successRate}%</span>
+          </div>
+          <button className="btn-reset-stats" onClick={handleResetStats} title="Reset Statistics">
+            🔄
+          </button>
+        </div>
         
         <Tutor challenge={challenge} />
 
@@ -96,6 +143,9 @@ function App() {
         />
 
         <div className="controls">
+          <button className="btn btn-secondary" onClick={handleReset}>
+            Reset
+          </button>
           <button className="btn btn-primary" onClick={handleSubmit}>
             Submit Answer
           </button>
