@@ -10,7 +10,10 @@ function Tutor({ challenge }) {
         <h2>📚 What is Range?</h2>
         <p className={styles.definition}>
           <strong>Range</strong> is the set of possible output values, which are shown on the y-axis.
-          It represents the difference between the highest and lowest values in your data.
+          It represents the difference between the highest and lowest values in your data.{' '}
+          <a href="https://courses.lumenlearning.com/waymakercollegealgebra/chapter/find-domain-and-range-from-a-graph/" target="_blank" rel="noopener noreferrer">
+            Learn more about domain and range from graphs
+          </a>
         </p>
       </div>
 
