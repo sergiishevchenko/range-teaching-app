@@ -109,6 +109,8 @@ function App() {
       <div className="container">
         <h1 className="title">Range Teaching App</h1>
         
+        <Tutor challenge={challenge} />
+
         <div className="statistics-dashboard">
           <div className="stat-item">
             <span className="stat-label">Completed:</span>
@@ -126,8 +128,6 @@ function App() {
             🔄
           </button>
         </div>
-        
-        <Tutor challenge={challenge} />
 
         {graphData && (
           <BubbleGraph
