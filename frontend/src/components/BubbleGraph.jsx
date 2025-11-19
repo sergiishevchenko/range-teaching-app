@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   ScatterChart,
   Scatter,
@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
 
 import styles from './BubbleGraph.module.css';
@@ -160,9 +161,36 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
     z: getBubbleSize(point.size),
   }));
 
+  const currentRange = useMemo(() => {
+    const yValues = points.map(p => p.y);
+    if (yValues.length === 0) return { min: 0, max: 0, range: 0 };
+    const min = Math.min(...yValues);
+    const max = Math.max(...yValues);
+    return {
+      min: Math.round(min),
+      max: Math.round(max),
+      range: Math.round(max - min)
+    };
+  }, [points]);
+
   return (
     <div className={styles['bubble-graph-container']}>
       <h3 className={styles['graph-title']}>{graphData.title}</h3>
+      
+      <div className={styles['live-range-display']}>
+        <div className={styles['range-item']}>
+          <span className={styles['range-label']}>Min:</span>
+          <span className={styles['range-value']}>{currentRange.min}</span>
+        </div>
+        <div className={styles['range-item']}>
+          <span className={styles['range-label']}>Max:</span>
+          <span className={styles['range-value']}>{currentRange.max}</span>
+        </div>
+        <div className={styles['range-item']}>
+          <span className={styles['range-label']}>Range:</span>
+          <span className={styles['range-value']}>{currentRange.range}</span>
+        </div>
+      </div>
       
       <div className={styles['graph-content']}>
         <div
@@ -205,6 +233,20 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
                 domain={[20, 70]}
               />
               <Tooltip content={<CustomTooltip />} />
+              <ReferenceLine
+                y={currentRange.min}
+                stroke="#ff6b6b"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                label={{ value: `Min: ${currentRange.min}`, position: "right" }}
+              />
+              <ReferenceLine
+                y={currentRange.max}
+                stroke="#51cf66"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                label={{ value: `Max: ${currentRange.max}`, position: "right" }}
+              />
               <Scatter
                 name="Cities"
                 data={scatterData}
