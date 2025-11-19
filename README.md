@@ -2,12 +2,24 @@
 
 A web application that teaches the concept of "Range" in data visualization through an interactive bubble graph.
 
+## Live Demo
+
+🌐 **Deployed Application**: [https://range-teaching-app.vercel.app/](https://range-teaching-app.vercel.app/)
+
 ## Tech Stack
 
 - **Frontend**: React 18.2.0 with JSX components and CSS Modules
 - **Backend**: Django 4.2.7 with Django REST Framework
 - **Visualization**: Recharts 2.10.3
 - **HTTP Client**: Axios
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Python** 3.8 or higher
+- **Node.js** 14.x or higher and **npm** (or **yarn**)
+- **Git** (for cloning the repository)
 
 ## Features
 
@@ -115,9 +127,88 @@ The frontend will be available at `http://localhost:3000`
 
 ## API Endpoints
 
-- `GET /api/data/` - Get initial graph data
-- `GET /api/challenge/` - Get a random challenge
-- `POST /api/validate/` - Validate if the user's graph meets the challenge requirements
+### Get Initial Graph Data
+- **Endpoint**: `GET /api/data/`
+- **Description**: Returns the initial graph data with all data points
+- **Example Request**:
+```bash
+curl http://localhost:8000/api/data/
+```
+- **Example Response**:
+```json
+{
+  "xAxisLabel": "Year",
+  "yAxisLabel": "Number of Stations",
+  "title": "Metro Systems of the World",
+  "points": [
+    {"id": 1, "name": "Tokyo", "x": 1927, "y": 285, "size": 304},
+    ...
+  ]
+}
+```
+
+### Get Random Challenge
+- **Endpoint**: `GET /api/challenge/`
+- **Description**: Returns a randomly selected challenge
+- **Example Request**:
+```bash
+curl http://localhost:8000/api/challenge/
+```
+- **Example Response**:
+```json
+{
+  "type": "greater_than",
+  "value": 300,
+  "description": "Make the range greater than 300"
+}
+```
+
+### Validate Range
+- **Endpoint**: `POST /api/validate/`
+- **Description**: Validates if the user's graph meets the challenge requirements
+- **Request Body**:
+```json
+{
+  "points": [
+    {"id": 1, "name": "Tokyo", "x": 1927, "y": 250, "size": 304},
+    {"id": 2, "name": "Seoul", "x": 1974, "y": 400, "size": 331}
+  ],
+  "challenge": {
+    "type": "greater_than",
+    "value": 300,
+    "description": "Make the range greater than 300"
+  }
+}
+```
+- **Example Response**:
+```json
+{
+  "is_correct": true,
+  "feedback": "Your range is 150. Target: greater than 300. ✓ Correct!",
+  "current_range": {
+    "min": 250,
+    "max": 400,
+    "range": 150
+  }
+}
+```
+
+## Environment Variables
+
+### Backend (.env in backend directory)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SECRET_KEY` | Django secret key for cryptographic signing | `django-insecure-dev-key-change-in-production` |
+| `DEBUG` | Enable/disable debug mode | `True` |
+| `ALLOWED_HOSTS` | Comma-separated list of allowed hostnames | `*` |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list of CORS allowed origins | `http://localhost:3000,http://127.0.0.1:3000,https://range-teaching-app.vercel.app` |
+
+### Frontend (.env in frontend directory)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `REACT_APP_API_BASE_URL` | Base URL for API requests | `http://localhost:8000/api` |
 
 ## Project Structure
 
@@ -180,3 +271,55 @@ Challenges are randomly selected from `backend/api/challenges.py` on each reques
 - Frontend uses Recharts for bubble graph visualization
 - CORS is configured to allow frontend-backend communication
 - All styles are scoped to components using CSS Modules
+
+## Troubleshooting
+
+### Backend Issues
+
+**Port 8000 already in use:**
+```bash
+# Find and kill the process using port 8000
+lsof -ti:8000 | xargs kill -9
+# Or use a different port
+python manage.py runserver 8001
+```
+
+**ModuleNotFoundError or ImportError:**
+- Ensure virtual environment is activated: `source venv/bin/activate`
+- Reinstall dependencies: `pip install -r requirements.txt`
+
+**Database migration errors:**
+```bash
+# Reset database (WARNING: deletes all data)
+rm db.sqlite3
+python manage.py migrate
+```
+
+### Frontend Issues
+
+**Port 3000 already in use:**
+```bash
+# React will automatically suggest using another port
+# Or set PORT environment variable
+PORT=3001 npm start
+```
+
+**API connection errors:**
+- Verify backend is running on `http://localhost:8000`
+- Check `REACT_APP_API_BASE_URL` in `.env` file
+- Ensure CORS is properly configured in Django settings
+
+**npm install fails:**
+```bash
+# Clear npm cache and reinstall
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install
+```
+
+### CORS Issues
+
+If you encounter CORS errors when connecting frontend to backend:
+- Add your frontend URL to `CORS_ALLOWED_ORIGINS` in backend `.env`
+- Ensure backend `ALLOWED_HOSTS` includes your domain
+- Restart both servers after changing environment variables
