@@ -11,20 +11,30 @@ from .graph_data import GRAPH_POINTS, GRAPH_CONFIG
 @api_view(['GET'])
 def get_initial_data(request):
     """Return initial graph data based on the Metro Systems example."""
-
-    data = {
-        **GRAPH_CONFIG,
-        "points": GRAPH_POINTS
-    }
-    return Response(data)
+    try:
+        data = {
+            **GRAPH_CONFIG,
+            "points": GRAPH_POINTS
+        }
+        return Response(data)
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['GET'])
 def get_challenge(request):
     """Generate a random challenge for the user."""
-
-    challenge = random.choice(CHALLENGE_TYPES)
-    return Response(challenge)
+    try:
+        challenge = random.choice(CHALLENGE_TYPES)
+        return Response(challenge)
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['POST'])
