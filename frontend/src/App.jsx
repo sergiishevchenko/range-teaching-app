@@ -99,9 +99,6 @@ function App() {
           <button className="btn btn-primary" onClick={handleSubmit}>
             Submit Answer
           </button>
-          <button className="btn btn-secondary" onClick={handleNewChallenge}>
-            New Challenge
-          </button>
         </div>
       </div>
     </div>
