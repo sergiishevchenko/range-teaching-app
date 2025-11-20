@@ -6,6 +6,8 @@ A web application that teaches the concept of "Range" in data visualization thro
 
 🌐 **Deployed Application**: [https://range-teaching-app.vercel.app/](https://range-teaching-app.vercel.app/)
 
+![Demo Screenshot](img/demo-screenshot.png)
+
 ## Tech Stack
 
 - **Frontend**: React 18.2.0 with JSX components and CSS Modules
@@ -39,12 +41,12 @@ You can use the provided shell scripts for quick setup:
 
 **Backend:**
 ```bash
-./start_backend.sh
+./scripts/start_backend.sh
 ```
 
 **Frontend (in a new terminal):**
 ```bash
-./start_frontend.sh
+./scripts/start_frontend.sh
 ```
 
 ### Manual Setup
@@ -242,8 +244,11 @@ tt-schole-ai/
 │   │   ├── index.js
 │   │   └── index.css
 │   └── package.json
-├── start_backend.sh         
-├── start_frontend.sh         
+├── scripts/
+│   ├── start_backend.sh         
+│   └── start_frontend.sh         
+├── img/
+│   └── demo-screenshot.png
 └── README.md
 ```
 
