@@ -60,14 +60,14 @@ function App() {
         challenge: challenge,
       });
       setFeedback(response.data);
-      
+
       const newStats = {
         ...statistics,
         total: statistics.total + 1,
         completed: response.data.is_correct ? statistics.completed + 1 : statistics.completed,
       };
-      newStats.successRate = newStats.total > 0 
-        ? Math.round((newStats.completed / newStats.total) * 100) 
+      newStats.successRate = newStats.total > 0
+        ? Math.round((newStats.completed / newStats.total) * 100)
         : 0;
       setStatistics(newStats);
       localStorage.setItem('rangeAppStatistics', JSON.stringify(newStats));
@@ -108,7 +108,7 @@ function App() {
     <div className="app">
       <div className="container">
         <h1 className="title">Range Teaching App</h1>
-        
+
         <Tutor challenge={challenge} />
 
         <div className="statistics-dashboard">
@@ -137,7 +137,7 @@ function App() {
           />
         )}
 
-        <Feedback 
+        <Feedback
           feedback={feedback}
           onNewChallenge={handleNewChallenge}
         />

@@ -15,7 +15,7 @@ import styles from './BubbleGraph.module.css';
 
 function BubbleGraph({ graphData, points, onPointUpdate }) {
   const [draggedPoint, setDraggedPoint] = useState(null);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0, pointX: 0, pointY: 0 });
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0, pointX: 0, pointY: 0 }); // x, y - mouse's coordinates; pointX, pointY - point's coordinates
   const containerRef = useRef(null);
 
   const getBubbleSize = (size) => {
@@ -23,10 +23,10 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
     const maxSize = 3.5;
     const minDiameter = 20;
     const maxDiameter = 70;
-    
+
     const normalized = (size - minSize) / (maxSize - minSize);
     const diameter = minDiameter + normalized * (maxDiameter - minDiameter);
-    
+
     return Math.round(diameter);
   };
 
@@ -45,33 +45,33 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
   }, []);
 
   const handleMouseMove = useCallback((e) => {
-    if (!draggedPoint) return;
-    
-    const bounds = getChartBounds();
-    if (!bounds) return;
-    
-    const deltaX = e.clientX - dragStart.x;
-    const deltaY = e.clientY - dragStart.y;
-    
-    const xDelta = (deltaX / bounds.width) * (graphData.xAxis.max - graphData.xAxis.min);
-    const yDelta = -(deltaY / bounds.height) * (graphData.yAxis.max - graphData.yAxis.min);
-    
-    const newX = Math.max(
-      graphData.xAxis.min,
-      Math.min(graphData.xAxis.max, dragStart.pointX + xDelta)
-    );
-    const newY = Math.max(
-      graphData.yAxis.min,
-      Math.min(graphData.yAxis.max, dragStart.pointY + yDelta)
-    );
-    
-    const updatedPoints = points.map((p) =>
-      p.id === draggedPoint
-        ? { ...p, x: Math.round(newX), y: Math.round(newY) }
-        : p
-    );
-    
-    onPointUpdate(updatedPoints);
+		if (!draggedPoint) return;
+
+		const bounds = getChartBounds();
+		if (!bounds) return;
+
+		const deltaX = e.clientX - dragStart.x;
+		const deltaY = e.clientY - dragStart.y;
+
+		const xDelta = (deltaX / bounds.width) * (graphData.xAxis.max - graphData.xAxis.min);
+		const yDelta = -(deltaY / bounds.height) * (graphData.yAxis.max - graphData.yAxis.min);
+
+		const newX = Math.max(
+			graphData.xAxis.min,
+			Math.min(graphData.xAxis.max, dragStart.pointX + xDelta)
+		);
+		const newY = Math.max(
+			graphData.yAxis.min,
+			Math.min(graphData.yAxis.max, dragStart.pointY + yDelta)
+		);
+
+		const updatedPoints = points.map((p) =>
+			p.id === draggedPoint
+				? { ...p, x: Math.round(newX), y: Math.round(newY) }
+				: p
+		);
+
+		onPointUpdate(updatedPoints);
   }, [draggedPoint, dragStart, graphData, getChartBounds, points, onPointUpdate]);
 
   const handleMouseUp = useCallback(() => {
@@ -93,13 +93,13 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
   const handleBubbleMouseDown = useCallback((e, point) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const containerRect = containerRef.current?.getBoundingClientRect();
     if (!containerRect) return;
-    
+
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-    
+
     setDraggedPoint(point.id);
     setDragStart({
       x: mouseX,
@@ -112,14 +112,14 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
   const renderCustomShape = useCallback((props) => {
     const { cx, cy, payload, z } = props;
     if (cx == null || cy == null) return null;
-    
+
     const radius = z / 2;
     const pointId = payload.id;
     const isDragged = draggedPoint === pointId;
-    
+
     const point = points.find(p => p.id === pointId);
     if (!point) return null;
-    
+
     return (
       <circle
         cx={cx}
@@ -176,7 +176,7 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
   return (
     <div className={styles['bubble-graph-container']}>
       <h3 className={styles['graph-title']}>{graphData.title}</h3>
-      
+
       <div className={styles['live-range-display']}>
         <div className={styles['range-item']}>
           <span className={styles['range-label']}>Min:</span>
@@ -191,7 +191,7 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
           <span className={styles['range-value']}>{currentRange.range}</span>
         </div>
       </div>
-      
+
       <div className={styles['graph-content']}>
         <div
           ref={containerRef}
@@ -200,7 +200,7 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
         >
           <ResponsiveContainer width="100%" height={500}>
             <ScatterChart
-              margin={{ top: 20, right: 20, bottom: 60, left: 80 }}
+              margin={{ top: 20, right: 80, bottom: 60, left: 80 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
