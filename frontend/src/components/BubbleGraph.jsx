@@ -128,7 +128,7 @@ function BubbleGraph({ graphData, points, onPointUpdate }) {
         fill={isDragged ? '#764ba2' : '#667eea'}
         stroke="#fff"
         strokeWidth={2}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: isDragged ? 'grabbing' : 'pointer' }}
         onMouseDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
