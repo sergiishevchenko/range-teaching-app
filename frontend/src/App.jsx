@@ -20,6 +20,7 @@ function App() {
     return saved ? JSON.parse(saved) : { completed: 0, total: 0, successRate: 0 };
   });
   const [lastSubmittedChallengeId, setLastSubmittedChallengeId] = useState(null);
+  const [attemptsCount, setAttemptsCount] = useState(0);
 
   useEffect(() => {
     loadInitialData();
@@ -45,6 +46,7 @@ function App() {
       const response = await axios.get(`${API_BASE_URL}/challenge/`);
       setChallenge(response.data);
       setFeedback(null);
+      setAttemptsCount(0);
     } catch (error) {
       console.error('Error loading challenge:', error);
     }
@@ -61,6 +63,7 @@ function App() {
         challenge: challenge,
       });
       setFeedback(response.data);
+      setAttemptsCount(prev => prev + 1);
 
       const challengeId = challenge?.type + challenge?.value + challenge?.min + challenge?.max;
       if (lastSubmittedChallengeId !== challengeId) {
@@ -133,6 +136,20 @@ function App() {
             🔄
           </button>
         </div>
+
+        {challenge && (
+            <div style={{
+                marginBottom: '10px',
+                padding: '10px',
+                background: '#f8f9fa',
+                borderRadius: '6px',
+                textAlign: 'center'
+            }}>
+                <span style={{ fontWeight: 600, color: '#666' }}>
+                Attempts: <span style={{ color: '#667eea' }}>{attemptsCount}</span>
+                </span>
+            </div>
+        )}
 
         {graphData && (
           <BubbleGraph
