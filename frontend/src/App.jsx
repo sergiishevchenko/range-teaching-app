@@ -24,7 +24,8 @@ function App() {
 	});
 	const [lastSubmittedChallengeId, setLastSubmittedChallengeId] =
 		useState(null);
-	const [attemptsCount, setAttemptsCount] = useState(0);
+    const [attemptsCount, setAttemptsCount] = useState(0);
+    const [error, setError] = useState(null);
 
 	useEffect(() => {
 		loadInitialData();
@@ -32,7 +33,8 @@ function App() {
 	}, []);
 
 	const loadInitialData = async () => {
-		try {
+        try {
+            setError(null);
 			const response = await axios.get(`${API_BASE_URL}/data/`);
 			setGraphData(response.data);
 			const initial = response.data.points;
@@ -40,19 +42,22 @@ function App() {
 			setPoints(initial);
 			setLoading(false);
 		} catch (error) {
-			console.error("Error loading data:", error);
+            console.error("Error loading data:", error);
+            setError("Failed to load graph data. Please refresh the page.");
 			setLoading(false);
 		}
 	};
 
 	const loadChallenge = async () => {
-		try {
+        try {
+            setError(null);
 			const response = await axios.get(`${API_BASE_URL}/challenge/`);
 			setChallenge(response.data);
 			setFeedback(null);
 			setAttemptsCount(0);
 		} catch (error) {
-			console.error("Error loading challenge:", error);
+            console.error("Error loading challenge:", error);
+            setError("Failed to load challenge. Please try again.");
 		}
 	};
 
@@ -61,7 +66,8 @@ function App() {
 	};
 
 	const handleSubmit = async () => {
-		try {
+        try {
+            setError(null);
 			const response = await axios.post(`${API_BASE_URL}/validate/`, {
 				points: points,
 				challenge: challenge,
@@ -96,7 +102,10 @@ function App() {
 				setLastSubmittedChallengeId(challengeId);
 			}
 		} catch (error) {
-			console.error("Error validating:", error);
+            console.error("Error validating:", error);
+            setError(
+				"Failed to validate your answer. Please check your connection and try again."
+			);
 			setFeedback({
 				is_correct: false,
 				feedback: "Error validating your answer. Please try again.",
@@ -192,6 +201,34 @@ function App() {
 					feedback={feedback}
 					onNewChallenge={handleNewChallenge}
 				/>
+
+				{error && (
+					<div
+						className="error-message"
+						style={{
+							background: "#ffebee",
+							color: "#c62828",
+							padding: "15px",
+							borderRadius: "8px",
+							marginBottom: "20px",
+							borderLeft: "4px solid #f44336",
+						}}
+					>
+						<strong>⚠️ Error:</strong> {error}
+						<button
+							onClick={() => setError(null)}
+							style={{
+								float: "right",
+								background: "transparent",
+								border: "none",
+								fontSize: "18px",
+								cursor: "pointer",
+							}}
+						>
+							×
+						</button>
+					</div>
+				)}
 
 				<div className="controls">
 					<button className="btn btn-secondary" onClick={handleReset}>
