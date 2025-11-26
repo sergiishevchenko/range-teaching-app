@@ -194,6 +194,7 @@ function App() {
 						graphData={graphData}
 						points={points}
 						onPointUpdate={handlePointUpdate}
+						challenge={challenge}
 					/>
 				)}
 
