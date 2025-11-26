@@ -33,6 +33,29 @@
   position: relative;
 }
 
+.btn-export-stats {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.btn-export-stats:hover {
+  background: #5568d3;
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 .stat-item {
   display: flex;
   flex-direction: column;

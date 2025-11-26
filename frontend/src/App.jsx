@@ -63,6 +63,28 @@ function App() {
 
 	const handlePointUpdate = (updatedPoints) => {
 		setPoints(updatedPoints);
+    };
+
+    const handleExportStats = () => {
+		const dataToExport = {
+			statistics: statistics,
+			exportDate: new Date().toISOString(),
+			challengeHistory: [],
+		};
+
+		const jsonString = JSON.stringify(dataToExport, null, 2);
+		const blob = new Blob([jsonString], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = `range-app-stats-${
+			new Date().toISOString().split("T")[0]
+		}.json`;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
 	};
 
 	const handleSubmit = async () => {
@@ -145,6 +167,13 @@ function App() {
 				<Tutor challenge={challenge} points={points} />
 
 				<div className="statistics-dashboard">
+					<button
+						className="btn-export-stats"
+						onClick={handleExportStats}
+						title="Export Statistics"
+					>
+						📥 Export JSON
+					</button>
 					<div className="stat-item">
 						<span className="stat-label">Completed:</span>
 						<span className="stat-value">
