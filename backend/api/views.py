@@ -30,7 +30,17 @@ def get_challenge(request):
     """Generate a random challenge for the user."""
 
     try:
-        challenge = random.choice(CHALLENGE_TYPES)
+        challenge_type = request.query_params.get('type', None)
+        
+        if challenge_type:
+            filtered_challenges = [c for c in CHALLENGE_TYPES if c['type'] == challenge_type]
+            if filtered_challenges:
+                challenge = random.choice(filtered_challenges)
+            else:
+                challenge = random.choice(CHALLENGE_TYPES)
+        else:
+            challenge = random.choice(CHALLENGE_TYPES)
+        
         return Response(challenge)
     except Exception as e:
         return Response(

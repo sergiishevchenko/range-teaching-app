@@ -6,7 +6,9 @@ A web application that teaches the concept of "Range" in data visualization thro
 
 🌐 **Deployed Application**: [https://range-teaching-app.vercel.app/](https://range-teaching-app.vercel.app/)
 
-![Demo Screenshot](img/demo-screenshot.png)
+![Demo Screenshot 1](img/demo-screenshot-1.png)
+
+![Demo Screenshot 2](img/demo-screenshot-2.png)
 
 ## Tech Stack
 
@@ -248,7 +250,8 @@ tt-schole-ai/
 │   ├── start_backend.sh         
 │   └── start_frontend.sh         
 ├── img/
-│   └── demo-screenshot.png
+│   ├── demo-screenshot-1.png
+│   └── demo-screenshot-2.png
 └── README.md
 ```
 

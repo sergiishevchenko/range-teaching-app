@@ -24,8 +24,9 @@ function App() {
 	});
 	const [lastSubmittedChallengeId, setLastSubmittedChallengeId] =
 		useState(null);
-    const [attemptsCount, setAttemptsCount] = useState(0);
-    const [error, setError] = useState(null);
+	const [attemptsCount, setAttemptsCount] = useState(0);
+	const [error, setError] = useState(null);
+	const [selectedChallengeType, setSelectedChallengeType] = useState(null);
 
 	useEffect(() => {
 		loadInitialData();
@@ -33,8 +34,8 @@ function App() {
 	}, []);
 
 	const loadInitialData = async () => {
-        try {
-            setError(null);
+		try {
+			setError(null);
 			const response = await axios.get(`${API_BASE_URL}/data/`);
 			setGraphData(response.data);
 			const initial = response.data.points;
@@ -42,30 +43,33 @@ function App() {
 			setPoints(initial);
 			setLoading(false);
 		} catch (error) {
-            console.error("Error loading data:", error);
-            setError("Failed to load graph data. Please refresh the page.");
+			console.error("Error loading data:", error);
+			setError("Failed to load graph data. Please refresh the page.");
 			setLoading(false);
 		}
 	};
 
-	const loadChallenge = async () => {
-        try {
-            setError(null);
-			const response = await axios.get(`${API_BASE_URL}/challenge/`);
+	const loadChallenge = async (type = null) => {
+		try {
+			setError(null);
+			const url = type
+				? `${API_BASE_URL}/challenge/?type=${type}`
+				: `${API_BASE_URL}/challenge/`;
+			const response = await axios.get(url);
 			setChallenge(response.data);
 			setFeedback(null);
 			setAttemptsCount(0);
 		} catch (error) {
-            console.error("Error loading challenge:", error);
-            setError("Failed to load challenge. Please try again.");
+			console.error("Error loading challenge:", error);
+			setError("Failed to load challenge. Please try again.");
 		}
 	};
 
 	const handlePointUpdate = (updatedPoints) => {
 		setPoints(updatedPoints);
-    };
+	};
 
-    const handleExportStats = () => {
+	const handleExportStats = () => {
 		const dataToExport = {
 			statistics: statistics,
 			exportDate: new Date().toISOString(),
@@ -78,9 +82,8 @@ function App() {
 
 		const link = document.createElement("a");
 		link.href = url;
-		link.download = `range-app-stats-${
-			new Date().toISOString().split("T")[0]
-		}.json`;
+		link.download = `range-app-stats-${new Date().toISOString().split("T")[0]
+			}.json`;
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
@@ -88,8 +91,8 @@ function App() {
 	};
 
 	const handleSubmit = async () => {
-        try {
-            setError(null);
+		try {
+			setError(null);
 			const response = await axios.post(`${API_BASE_URL}/validate/`, {
 				points: points,
 				challenge: challenge,
@@ -113,8 +116,8 @@ function App() {
 				newStats.successRate =
 					newStats.total > 0
 						? Math.round(
-								(newStats.completed / newStats.total) * 100
-						  )
+							(newStats.completed / newStats.total) * 100
+						)
 						: 0;
 				setStatistics(newStats);
 				localStorage.setItem(
@@ -124,8 +127,8 @@ function App() {
 				setLastSubmittedChallengeId(challengeId);
 			}
 		} catch (error) {
-            console.error("Error validating:", error);
-            setError(
+			console.error("Error validating:", error);
+			setError(
 				"Failed to validate your answer. Please check your connection and try again."
 			);
 			setFeedback({
@@ -163,6 +166,29 @@ function App() {
 		<div className="app">
 			<div className="container">
 				<h1 className="title">Range Teaching App</h1>
+
+				<div className="challenge-type-selector">
+					<div className="challenge-type-label">
+						<span className="challenge-type-icon">🎯</span>
+						<span>Challenge Type</span>
+					</div>
+					<select
+						className="challenge-type-select"
+						value={selectedChallengeType || ''}
+						onChange={(e) => {
+							const type = e.target.value || null;
+							setSelectedChallengeType(type);
+							loadChallenge(type);
+						}}
+					>
+						<option value="">🎲 Random</option>
+						<option value="less_than">⬇️ Less Than</option>
+						<option value="greater_than">⬆️ Greater Than</option>
+						<option value="between">↔️ Between</option>
+						<option value="exact">🎯 Exact</option>
+					</select>
+				</div>
+
 
 				<Tutor challenge={challenge} points={points} />
 
