@@ -19,6 +19,7 @@ function App() {
     const saved = localStorage.getItem('rangeAppStatistics');
     return saved ? JSON.parse(saved) : { completed: 0, total: 0, successRate: 0 };
   });
+  const [lastSubmittedChallengeId, setLastSubmittedChallengeId] = useState(null);
 
   useEffect(() => {
     loadInitialData();
@@ -61,16 +62,20 @@ function App() {
       });
       setFeedback(response.data);
 
-      const newStats = {
-        ...statistics,
-        total: statistics.total + 1,
-        completed: response.data.is_correct ? statistics.completed + 1 : statistics.completed,
-      };
-      newStats.successRate = newStats.total > 0
-        ? Math.round((newStats.completed / newStats.total) * 100)
-        : 0;
-      setStatistics(newStats);
-      localStorage.setItem('rangeAppStatistics', JSON.stringify(newStats));
+      const challengeId = challenge?.type + challenge?.value + challenge?.min + challenge?.max;
+      if (lastSubmittedChallengeId !== challengeId) {
+        const newStats = {
+            ...statistics,
+            total: statistics.total + 1,
+            completed: response.data.is_correct ? statistics.completed + 1 : statistics.completed,
+        };
+        newStats.successRate = newStats.total > 0
+            ? Math.round((newStats.completed / newStats.total) * 100)
+            : 0;
+        setStatistics(newStats);
+        localStorage.setItem('rangeAppStatistics', JSON.stringify(newStats));
+        setLastSubmittedChallengeId(challengeId);
+      }
     } catch (error) {
       console.error('Error validating:', error);
       setFeedback({
