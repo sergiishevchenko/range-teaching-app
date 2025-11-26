@@ -10,10 +10,42 @@
   border-left: 4px solid #667eea;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .tutor-section h2 {
   color: #333;
-  margin-bottom: 15px;
+  margin: 0;
   font-size: 1.5em;
+}
+
+.collapse-button {
+  background: transparent;
+  border: none;
+  font-size: 1.5em;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.collapse-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.collapse-button:active {
+  transform: scale(0.95);
 }
 
 .definition {
